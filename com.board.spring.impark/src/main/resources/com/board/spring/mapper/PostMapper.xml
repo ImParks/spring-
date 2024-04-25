@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.board.spring.mapper.PostMapper">
+
+	<!-- 위 멥퍼 경로와 동일한 경로로 만들어야함 -->
+	<!-- 포스트 리스트를 모두 가져옴 -->
+	<!-- 정방향-->
+	<select id="postList" resultType="com.board.spring.dto.PostDto" parameterType="com.board.spring.dto.PageDto">
+		SELECT post.postNumber,post.title,post.hit,post.userNumber,user.userName,user.userTag,post.dateTime,post.postModifyTime
+		FROM post JOIN user ON post.userNumber = user.userNumber WHERE post.title like CONCAT('%', #{postSearch}, '%')  limit	#{startPost},#{pageSize} ;
+	</select>				
+	<!-- 역순 -->			 																					
+	<select id="postListDesc" resultType="com.board.spring.dto.PostDto" parameterType="com.board.spring.dto.PageDto">
+		SELECT post.postNumber,post.title,post.hit,post.userNumber,user.userName,user.userTag,post.dateTime,post.postModifyTime
+		FROM post JOIN user ON post.userNumber = user.userNumber WHERE post.title like CONCAT('%', #{postSearch}, '%') ORDER BY post.postNumber DESC  limit	#{startPost},#{pageSize} ;
+	</select>							 																					
+	<!-- 포스트 정보를 가져옴 -->
+	<select id="postInfo" resultType="com.board.spring.dto.PostDto">
+		SELECT
+		post.postNumber,post.title,post.content,post.hit,post.userNumber,user.userName,user.userTag,post.dateTime,post.postModifyTime
+		FROM post JOIN user ON post.userNumber = user.userNumber WHERE postNumber = #{postNumber};
+	</select>
+	<!-- parameterType 에 각 변수들이 어디에 저장되어 있는지 정의해주기 때문에 변수명만 저장해주면 사용가능 -->
+	<update id="postModify" parameterType="com.board.spring.dto.PostDto">
+		UPDATE post SET title =
+		#{title}, content = #{content} ,postModifyTime =
+		now() WHERE postNumber
+		= #{postNumber};
+	</update>
+
+	<delete id="postDel" parameterType="com.board.spring.dto.PostDto">
+		DELETE FROM post WHERE
+		postNumber = #{postNumber};
+	</delete>
+
+	<update id="postReading"
+		parameterType="com.board.spring.dto.PostDto">
+		UPDATE post SET hit = hit + 1 WHERE postNumber =	#{postNumber};
+	</update>
+
+	<insert id="postWrite" parameterType="com.board.spring.dto.PostDto">
+		INSERT INTO post
+		(title,content,userNumber) value (#{title},#{content},#{userNumber});
+	</insert>
+
+	<select id="postCount" resultType="int" parameterType="com.board.spring.dto.PageDto">
+		SELECT COUNT(*) FROM post WHERE title like CONCAT('%', #{postSearch}, '%');
+	</select>
+
+
+</mapper>

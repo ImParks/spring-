@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.board.spring.mapper.LoginMapper">
+
+
+<select id="signUpCheck" resultType="Integer" parameterType ="com.board.spring.dto.LoginDto">
+	SELECT COUNT(*) FROM user WHERE userID = #{userID}
+</select>
+
+<select id="signUpNameTag" resultType="Integer" parameterType ="com.board.spring.dto.LoginDto">
+	SELECT COALESCE(MAX(userTag), 0) FROM user WHERE userName = #{userName};
+</select>
+
+<insert id="signUp"  parameterType ="com.board.spring.dto.LoginDto">
+	INSERT INTO user (userID,userPW,userName,userTag) value (#{userID},#{userPW},#{userName},#{userTag})
+</insert>
+
+<select id="loginCheck" resultType="Integer" parameterType="com.board.spring.dto.LoginDto">
+SELECT COUNT(*) FROM user WHERE userID = #{userID} AND userPW = #{userPW};
+</select>
+
+
+
+<select id="login" resultType="Integer" parameterType ="com.board.spring.dto.LoginDto">
+	SELECT userNumber FROM user WHERE userID = #{userID} AND userPW = #{userPW};
+</select>
+
+</mapper>
